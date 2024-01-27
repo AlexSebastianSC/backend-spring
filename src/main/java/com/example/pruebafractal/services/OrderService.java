@@ -48,21 +48,16 @@ public class OrderService {
 		}
 	}
 	
-	
+	/*
 	@Transactional
 	public DtoConfirmMessage updateOrder(Order order) { //Update
 
-		/*
-		if(!orderRepository.findById(order.getOrderId()).isPresent()) {
-			return new DtoConfirmMessage("Error: object doesnt exist");
-		}
-	    orderRepository.save(order);
-	    return new DtoConfirmMessage("order updated");*/
-	    
 	    try {
-	        Optional<Order> existingOrder = orderRepository.findById(order.getOrderId());
-
+	        Optional<Order> existingOrder = orderRepository.findById(order.getOrderId());       
 	        if (existingOrder.isPresent()) {
+	        	Long id = existingOrder.get().getOrderId();
+		        orderRepository.deleteById(id);	 
+	        	order.setOrderId(id);
 	            orderRepository.save(order);
 	            return new DtoConfirmMessage("Order updated");
 	        } else {
@@ -75,6 +70,35 @@ public class OrderService {
 	    }
 	    
 	}
+	*/
+	
+	@Transactional
+	public DtoConfirmMessage updateOrder(Order newOrder) {
+	    try {
+	        // Verifica si la orden existe en la base de datos
+	        Optional<Order> existingOrderOptional = orderRepository.findById(newOrder.getOrderId());
+	        
+	        if (existingOrderOptional.isPresent()) {
+	            // Si la orden existe, actualiza sus campos
+	            Order existingOrder = existingOrderOptional.get();
+	            existingOrder.setOrderDate(newOrder.getOrderDate());
+	            existingOrder.setNumProducts(newOrder.getNumProducts());
+	            existingOrder.setFinalPrice(newOrder.getFinalPrice());
+	            
+	            // Actualiza otros campos según sea necesario
+	            orderRepository.save(existingOrder);
+	            return new DtoConfirmMessage("La orden existente ha sido actualizada.");
+	        } else {
+	            // Si la orden no existe, guárdala como una nueva
+	            orderRepository.save(newOrder);
+	            return new DtoConfirmMessage("La nueva orden ha sido insertada.");
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error al actualizar e insertar la orden", e);
+	    }
+	}
+	
+	
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
@@ -105,6 +129,7 @@ public class OrderService {
 	        Optional<Order> existingOrder = orderRepository.findById(orderId);
 
 	        if (existingOrder.isPresent()) {
+	        	
 	            orderRepository.deleteById(orderId);
 	            return new DtoConfirmMessage("Order deleted");
 	        } else {

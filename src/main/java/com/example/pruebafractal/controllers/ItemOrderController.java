@@ -60,7 +60,7 @@ public class ItemOrderController {
             List<DtoItemOrder> dtoItemOrder = objectItemOrderBody.getDtoItemOrder();
             Long idOrder = objectItemOrderBody.getIdOrder();
             itemOrderService.saveItemOrder(idOrder, dtoItemOrder);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Item(s) have been created");
+            return ResponseEntity.status(HttpStatus.CREATED).body("{\"message\": \"Item(s) have been created\"}");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving items");
         }
@@ -71,9 +71,9 @@ public class ItemOrderController {
     	
     	try {
             itemOrderService.updateItemOrder(itemsOrder);
-            return ResponseEntity.ok("Items have been updated");
+            return ResponseEntity.ok("{\"message\": \"Item(s) have been updated\"}");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating items");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error updating items\"}");
         }
     }
     
@@ -82,9 +82,9 @@ public class ItemOrderController {
     	
     	try {
             itemOrderService.deleteItemsByOrderId(orderId);
-            return ResponseEntity.ok("All Items of your order have been deleted");
+            return ResponseEntity.ok("{\"message\": \"All Items of your order have been deleted\"}");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting items");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error deleting items\"}");
         }
     }
     
@@ -94,9 +94,9 @@ public class ItemOrderController {
     	try {
             ItemOrderId item = new ItemOrderId(orderId, productId);
             itemOrderService.deleteItemsOrder(item);
-            return ResponseEntity.ok("Item of your order has been deleted");
+            return ResponseEntity.ok("{\"message\": \"Item of your order has been deleted\"}");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting item");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error deleting item\"}");
         }
     }
     

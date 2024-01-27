@@ -61,9 +61,9 @@ public class OrderController {
     		DtoConfirmOrder orderId = orderService.saveOrder(objectOrderBody.getBodyOrder());
         	ObjectItemOrderBody objectItemOrderBody = new ObjectItemOrderBody(orderId.getOrderId(),objectOrderBody.getDtoBodyItemOrder());
         	itemOrderController.saveItemOrder(objectItemOrderBody);
-        	return ResponseEntity.ok("Order saved successfully");
+        	return ResponseEntity.ok("{\"message\": \"Order saved successfully\"}");
     	}catch(Exception e) {
-    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving order");
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error saving order\"}");
     	}
 
     }
@@ -71,14 +71,13 @@ public class OrderController {
     
     @PutMapping("/update")
     public ResponseEntity<String> updateOrder(@RequestBody Order order) {
-    	//orderService.updateOrder(order);
     	
     	try {
     		Object obj = orderService.updateOrder(order);
-    		return !Objects.isNull(obj)? ResponseEntity.ok("Order updated successfully") : ResponseEntity.noContent().build();
+    		return !Objects.isNull(obj)? ResponseEntity.ok("{\"message\": \"Order updated successfully\"}") : ResponseEntity.noContent().build();
             //return ResponseEntity.ok("Order updated successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating order");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error updating order\"}");
         }
     }
     
@@ -88,9 +87,9 @@ public class OrderController {
    	
     	try {
             Object obj = orderService.deleteOrder(idOrder);
-            return !Objects.isNull(obj)? ResponseEntity.ok("Order deleted successfully") : ResponseEntity.noContent().build();
+            return !Objects.isNull(obj)? ResponseEntity.ok("{\"message\": \"Order deleted successfully\"}") : ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting order");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error deleting order\"}");
         }
     }
 }

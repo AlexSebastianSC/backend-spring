@@ -60,39 +60,84 @@ public class ItemOrderService {
 	    }
     }
 	
+	
+	
 	@Transactional
 	public DtoConfirmMessage updateItemOrder(List<ItemOrder> itemOrders) {//Update
-		
-		/*if(itemOrders.isEmpty()) {
-			return new DtoConfirmMessage("Error: empty list");
-		}
-		
-		for(ItemOrder item : itemOrders) {
-			if(!itemOrderRepository.findById(item.getId()).isPresent()) {
-				return new DtoConfirmMessage("Error: id incorrecto ("+item.getId().getOrderId()+", "+item.getId().getProductId()+")");
-			}
-		}
-	    itemOrderRepository.saveAll(itemOrders);
-	    return new DtoConfirmMessage("Se actualizo los items");
-	    */
 	    
 	    try {
 	        if (itemOrders.isEmpty()) {
 	            return new DtoConfirmMessage("Error: Lista vacía");
 	        }
-
+	        /*
+	        List<ItemOrderId> idsItemOrderExisting = new ArrayList<ItemOrderId>();
 	        for (ItemOrder item : itemOrders) {
 	            if (!itemOrderRepository.findById(item.getId()).isPresent()) {
-	                return new DtoConfirmMessage("Error: incorrect ID (" + item.getId().getOrderId() + ", " + item.getId().getProductId() + ")");
+	            	//delete current ones
+	            	idsItemOrderExisting.add(item.getId());
+	                //return new DtoConfirmMessage("Error: incorrect ID (" + item.getId().getOrderId() + ", " + item.getId().getProductId() + ")");
 	            }
-	        }
-
-	        itemOrderRepository.saveAll(itemOrders);
+	        }*/
+	        Long orderId = itemOrders.get(0).getId().getOrderId();
+	        	//itemOrderRepository.deleteAllById(idsItemOrderExisting);
+	        	itemOrderRepository.deleteByOrderId(orderId);
+		        itemOrderRepository.saveAll(itemOrders);
+	        
+	        
 	        return new DtoConfirmMessage("Updating items");
 	    } catch (Exception e) {
 	        throw new RuntimeException("Error updating item order", e);
 	    }
 	}
+	
+	
+	
+	/*
+	@Transactional
+	public DtoConfirmMessage updateItemOrder(List<ItemOrder> newItemOrders) {
+	    try {
+	        List<ItemOrder> updatedItemOrders = new ArrayList<>();
+	        List<ItemOrder> insertedItemOrders = new ArrayList<>();
+
+	        for (ItemOrder newItemOrder : newItemOrders) {
+	            Optional<ItemOrder> existingItemOrderOptional = itemOrderRepository.findById(newItemOrder.getId());
+	            if (existingItemOrderOptional.isPresent()) {
+	                ItemOrder existingItemOrder = existingItemOrderOptional.get();
+	                
+	                // Compara los campos para determinar si hay cambios
+	                if (!existingItemOrder.equals(newItemOrder)) {
+	                    // Actualiza el registro existente
+	                    existingItemOrder.setQuantity(newItemOrder.getQuantity());
+	                    existingItemOrder.setProductTotalPrice(newItemOrder.getProductTotalPrice());
+	                    // Puedes actualizar otros campos según sea necesario
+
+	                    updatedItemOrders.add(itemOrderRepository.save(existingItemOrder));
+	                }
+	            } else {
+	                // Inserta el nuevo registro si no existe en la base de datos
+	                insertedItemOrders.add(newItemOrder);
+	            }
+	        }
+
+	        // Guarda los nuevos registros
+	        itemOrderRepository.saveAll(insertedItemOrders);
+
+	        // Crea un mensaje de confirmación
+	        StringBuilder message = new StringBuilder("Actualización completada. ");
+	        if (!updatedItemOrders.isEmpty()) {
+	            message.append("Registros actualizados: ").append(updatedItemOrders.size()).append(". ");
+	        }
+	        if (!insertedItemOrders.isEmpty()) {
+	            message.append("Registros insertados: ").append(insertedItemOrders.size()).append(".");
+	        }
+
+	        return new DtoConfirmMessage(message.toString());
+	    } catch (Exception e) {
+	        throw new RuntimeException("Error al actualizar e insertar ItemOrders", e);
+	    }
+	}
+	*/
+	
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@Transactional
